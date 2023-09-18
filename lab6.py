@@ -6,8 +6,8 @@ shift = 'M' * 4 + 'W' * 6
 
 
 def shift_o_matic(iterable, r=None):
-    # permutations('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
-    # permutations(range(3)) --> 012 021 102 120 201 210
+    # перестановки('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
+    # перестановки(range(3)) --> 012 021 102 120 201 210
     pool = tuple(iterable)
     n = len(pool)
     r = n if r is None else r
