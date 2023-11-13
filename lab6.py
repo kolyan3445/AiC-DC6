@@ -5,76 +5,55 @@
 shift = 'M' * 4 + 'W' * 6
 
 
-def shift_o_matic(iterable, r=None):
+def shift_o_matic(shift, shift_size_unused=None):
     # перестановки('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
     # перестановки(range(3)) --> 012 021 102 120 201 210
-    pool = tuple(iterable)
-    n = len(pool)
-    r = n if r is None else r
-    if r > n:
+    pool = tuple(shift)
+    shift_size_length = len(pool)
+    shift_size = shift_size_length if shift_size_unused is None else shift_size_unused
+    if shift_size > shift_size_length:
         return
-    indices = list(range(n))
-    cycles = list(range(n, n - r, -1))
-    yield tuple(pool[i] for i in indices[:r])
-    while n:
-        for i in reversed(range(r)):
-            cycles[i] -= 1
-            if cycles[i] == 0:
+    indices = list(range(shift_size_length))
+    cycles_count = list(range(shift_size_length, shift_size_length - shift_size, -1))
+    yield tuple(pool[x] for x in indices[:shift_size])
+    while shift_size_length:
+        for i in reversed(range(shift_size)):
+            cycles_count[i] -= 1
+            if cycles_count[i] == 0:
                 indices[i:] = indices[i + 1:] + indices[i:i + 1]
-                cycles[i] = n - i
+                cycles_count[i] = shift_size_length - i
             else:
-                j = cycles[i]
+                j = cycles_count[i]
                 indices[i], indices[-j] = indices[-j], indices[i]
-                yield tuple(pool[i] for i in indices[:r])
+                yield tuple(pool[i] for i in indices[:shift_size])
                 break
         else:
             return
-
 
 
 shifts = list(set(shift_o_matic(shift)))
 
-print("Часть 1")
+print("Часть 1\n Все возможные смены с четыремя мужчинами и оставшимися женщинами:")
 
-for i in shifts:
-    print(i)
+for i in range(len(shifts)):
+    print('Смена ' + str(i+1)+ ': ' + str(shifts[i]))
 
-#TODO: Новая техника - меньше требуется в смену - не требуется силовая подготовка
-#Новая техника увеличила эффективность в 2 раза, потому требования по местам снижены в 2 раза, как и требования по физ. подготовке
-#Часть 2
+# Часть 2
+# TODO: Места чередуются и мужчины не могут стоять рядом друг с другом
 
-shift = 'M' * 8 + 'W' * 12
+shift_separator = []
+new_shifts = []
 
-
-def shift_o_matic(iterable, r=None):
-    # permutations('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
-    # permutations(range(3)) --> 012 021 102 120 201 210
-    pool = tuple(iterable)
-    n = len(pool)
-    r = n if r is None else r
-    if r > n:
-        return
-    indices = list(range(n))
-    cycles = list(range(n, n - r, -1))
-    yield tuple(pool[i] for i in indices[:r])
-    while n:
-        for i in reversed(range(r)):
-            cycles[i] -= 1
-            if cycles[i] == 0:
-                indices[i:] = indices[i + 1:] + indices[i:i + 1]
-                cycles[i] = n - i
-            else:
-                j = cycles[i]
-                indices[i], indices[-j] = indices[-j], indices[i]
-                yield tuple(pool[i] for i in indices[:r])
-                break
-        else:
-            return
+for i in range(len(shifts)):
+    shift_separator.append(str(shifts[i]).replace('(', '').replace(')', '').replace("'", "").replace(',', '').replace(' ', ''))
+for i in shift_separator:
+    if not 'MM' in i:
+        new_shifts.append(i)
 
 
-shifts = list(set(shift_o_matic(shift, 5)))
+print("Часть 2\n На заводе заметили, что разговоры между мужчинами занимают рабочее время,"
+      " потому было решено ввести правило: мужчины на смене не могут стоять рядом на конвейере\n"
+      " Все возможные смены с четыремя мужчинами и оставшимися женщинами между ними:")
 
-print("Часть 2")
-
-for i in shifts:
-    print(i)
+for i in range(len(new_shifts)):
+    print('Смена ' + str(i+1)+ ': ' + str(new_shifts[i]))
